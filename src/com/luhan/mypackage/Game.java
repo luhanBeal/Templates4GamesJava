@@ -3,6 +3,7 @@ package com.luhan.mypackage;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferStrategy;
+import java.awt.image.BufferedImage;
 
 public class Game extends Canvas implements Runnable {
 
@@ -10,13 +11,24 @@ public class Game extends Canvas implements Runnable {
     private Thread thread;
             //canvas and frame
     public static JFrame frame;
-    private final int WIDTH = 240;
-    private final int HEIGHT = 160;
-    private final int SCALE = 3;
+    private final int WIDTH = 140;
+    private final int HEIGHT = 80;
+    private final int SCALE = 5;
+            //Background
+    private BufferedImage image;
+            //add var Spritesheet
+    private Spritesheet sheet;
+            //ADD player on the sheet
+    private BufferedImage player;
+    private int x = 0;
 
     public Game() {
+        sheet = new Spritesheet("/spritesheet.png");
+        player = sheet.getSprite(0,0,16,16);
         setPreferredSize(new Dimension(WIDTH*SCALE, HEIGHT*SCALE));
         initFrame();
+        // background
+        image = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_RGB);
     }
 
     // metodo chamado pelo construtor pra ficar mais organizado
@@ -58,7 +70,7 @@ public class Game extends Canvas implements Runnable {
 
             // pode ser Tick ou outro nome - serve para atualizar o jogo!!!
             public void update() {
-
+                x++;
             }
 
             public void render() {
@@ -68,17 +80,21 @@ public class Game extends Canvas implements Runnable {
                     return;
                 }
                 // criar um retangulo
-                Graphics g = bs.getDrawGraphics();
-                g.setColor(Color.black);
-                g.fillRect(0, 0, WIDTH*SCALE, HEIGHT*SCALE);
-                g.setColor(new Color(20,19,50));
-                g.fillOval(10, 10, 50, 50);
-                g.setColor(new Color(255,190,190));
-                g.fillRoundRect(250, 20, 50, 50, 120, 120);
-                //Strings
-                g.setFont(new Font("Arial", Font.BOLD, 20));
-                g.setColor(Color.white);
-                g.drawString("Olá Jogo!", 100,60);
+
+                Graphics g = image.getGraphics();
+                //Background
+                g.setColor(new Color(0,0,0));
+                g.fillRect(0,0,WIDTH,HEIGHT);
+
+                /* Renderização do jogo!!   */
+
+                g.drawImage(player, x, 20, null);
+
+                /*                          */
+                // limpar dados no jogo!
+                g.dispose();
+                g = bs.getDrawGraphics();
+                g.drawImage(image,0,0,WIDTH*SCALE, HEIGHT*SCALE, null);
                 bs.show();
             }
 
@@ -88,10 +104,10 @@ public class Game extends Canvas implements Runnable {
                 // pegar o FPS em nanoSegundos, long pq é um numero grande!
                 long lastTime = System.nanoTime();
                 double amountOfTicks = 60.0;
-                double ns = 100000000 / amountOfTicks;
+                double ns = 1000000000 / amountOfTicks;
                 double delta = 0;
-//                int frames = 0;
-//                double timer = System.currentTimeMillis();
+                int frames = 0;
+                double timer = System.currentTimeMillis();
 
                 while(isRunning) {
                     long now = System.nanoTime();
@@ -101,26 +117,17 @@ public class Game extends Canvas implements Runnable {
                         update();
                         render();
                         /***********************
-                         * Para trackear os frames está comentado!!!!!
+                         * Para trackear os frames!!!!!
                          ************************/
-//                        frames++;
-//                        delta--;
+                        frames++;
+                        delta--;
                     }
 
-//                    if (System.currentTimeMillis() - timer >= 1000) {
-//                        System.out.println("FPS: " + frames);
-//                        frames = 0;
-//                        timer += 1000;
-//                    }
-                    /*************
-                     * Aqui segue outra maneira para limitar os frames!
-                     ************/
-//                    try {
-//                        thread.sleep(1000/60);
-//                    } catch(InterruptedException e) {
-//                        e.printStackTrace();
-//                    }
-
+                    if (System.currentTimeMillis() - timer >= 1000) {
+                        System.out.println("FPS: " + frames);
+                        frames = 0;
+                        timer += 1000;
+                    }
                 }
                 stop();
             }
