@@ -19,12 +19,12 @@ public class Game extends Canvas implements Runnable {
             //add var Spritesheet
     private Spritesheet sheet;
             //ADD player on the sheet
-    private BufferedImage player;
+    private BufferedImage[] player;
     private int x = 0;
 
     public Game() {
         sheet = new Spritesheet("/spritesheet.png");
-        player = sheet.getSprite(0,0,16,16);
+        player = new BufferedImage[3];
         setPreferredSize(new Dimension(WIDTH*SCALE, HEIGHT*SCALE));
         initFrame();
         // background
@@ -83,14 +83,17 @@ public class Game extends Canvas implements Runnable {
 
                 Graphics g = image.getGraphics();
                 //Background
-                g.setColor(new Color(0,0,0));
+                g.setColor(new Color(0,0,255));
                 g.fillRect(0,0,WIDTH,HEIGHT);
 
                 /* Renderização do jogo!!   */
-
+                // casting g
+                Graphics2D g2 = (Graphics2D) g;
+                g2.drawImage(player, 30,30, null);
                 g.drawImage(player, x, 20, null);
 
-                /*                          */
+
+                /***********************/
                 // limpar dados no jogo!
                 g.dispose();
                 g = bs.getDrawGraphics();
