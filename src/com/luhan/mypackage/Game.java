@@ -20,11 +20,18 @@ public class Game extends Canvas implements Runnable {
     private Spritesheet sheet;
             //ADD player on the sheet
     private BufferedImage[] player;
-    private int x = 0;
+    // quantos frames para animar o personagem
+    private int frames=0, maxFrames=20;
+    private int curAnimation=0, maxAnimations=4;
+
 
     public Game() {
         sheet = new Spritesheet("/spritesheet.png");
-        player = new BufferedImage[3];
+        player = new BufferedImage[4];
+        player[0] = sheet.getSprite(0,0,10,10);
+        player[1] = sheet.getSprite(10,0,10,10);
+        player[2] = sheet.getSprite(0,0,10,10);
+        player[3] = sheet.getSprite(20,0,10,10);
         setPreferredSize(new Dimension(WIDTH*SCALE, HEIGHT*SCALE));
         initFrame();
         // background
@@ -70,7 +77,14 @@ public class Game extends Canvas implements Runnable {
 
             // pode ser Tick ou outro nome - serve para atualizar o jogo!!!
             public void update() {
-                x++;
+                frames ++;
+                if (frames > maxFrames) {
+                    frames = 0;
+                    curAnimation++;
+                    if (curAnimation >= maxAnimations) {
+                        curAnimation = 0;
+                    }
+                }
             }
 
             public void render() {
@@ -89,8 +103,8 @@ public class Game extends Canvas implements Runnable {
                 /* Renderização do jogo!!   */
                 // casting g
                 Graphics2D g2 = (Graphics2D) g;
-                g2.drawImage(player, 30,30, null);
-                g.drawImage(player, x, 20, null);
+                g2.drawImage(player[curAnimation], 30,30, null);
+                g.drawImage(player[1], 20, 20, null);
 
 
                 /***********************/
