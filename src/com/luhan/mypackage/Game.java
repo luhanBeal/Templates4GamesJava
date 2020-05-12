@@ -21,7 +21,7 @@ public class Game extends Canvas implements Runnable {
             //ADD player on the sheet
     private BufferedImage[] player;
     // quantos frames para animar o personagem
-    private int frames=0, maxFrames=20;
+    private int frames=0, maxFrames=10;
     private int curAnimation=0, maxAnimations=4;
 
 
